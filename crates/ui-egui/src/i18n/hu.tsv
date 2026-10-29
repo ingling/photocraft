@@ -4528,3 +4528,4 @@ smartSvg	AI/PDF/EPS contents will be edited as SVG. Saving replaces the embedded
 	Show layer bounds on hover	Réteghatárok megjelenítése rámutatáskor
 	Expand layer group on click	Rétegcsoport kibontása kattintásra
 	Show hover bounds from Layers	Határok megjelenítése a Rétegek panelről rámutatáskor
+	Include in Total Spot Ink	Beleszámít a teljes direktszín-mennyiségbe

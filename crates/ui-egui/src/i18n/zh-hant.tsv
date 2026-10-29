@@ -3273,3 +3273,4 @@ smartSvg	AI/PDF/EPS contents will be edited as SVG. Saving replaces the embedded
 	Show layer bounds on hover	滑過時顯示圖層邊界
 	Expand layer group on click	按一下時展開圖層群組
 	Show hover bounds from Layers	顯示來自圖層面板的滑過邊界
+	Include in Total Spot Ink	計入特別色油墨總量
