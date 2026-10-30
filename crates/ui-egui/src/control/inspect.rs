@@ -29,7 +29,8 @@ pub fn inspect(app: &PhotocraftApp, ctx: &egui::Context) -> Value {
         dialogs.push(json!({"id": SHELL_DIALOG, "kind": kind, "title": crate::workspace_ui::title(kind), "fields": fields}));
     }
     dialogs.extend(crate::discard_ui::inspect(app));
-    json!({
+    // One `json!` this size is at the macro recursion limit; further keys are added below it.
+    let mut snapshot = json!({
         "window": {"width": screen.width(), "height": screen.height(), "pixelsPerPoint": ctx.pixels_per_point()},
         "tool": app.ui.tool,
         "toolOptions": app.ui.tool_options,
@@ -41,6 +42,11 @@ pub fn inspect(app: &PhotocraftApp, ctx: &egui::Context) -> Value {
         "camTransform": app.ui.cam_transform,
         "layerMenu": app.ui.layer_menu,
         "layerPicker": app.ui.layer_picker,
+        "brushModeMenu": app.ui.brush_mode_menu.map(|pos| json!({
+            "pos": pos,
+            "mode": if app.ui.tool_options.brush_clear { "Clear" } else { app.session.tools.brush.mode.label() },
+            "choices": crate::brush_mode_menu::choices().iter().map(|(_, label)| *label).collect::<Vec<_>>(),
+        })),
         "brushPicker": app.ui.brush_picker.map(|pos| json!({
             "pos": pos,
             // The picker's content size once its corner grip was dragged (null: the default).
@@ -69,7 +75,6 @@ pub fn inspect(app: &PhotocraftApp, ctx: &egui::Context) -> Value {
         }),
         "panels": app.ui.panels,
         "dockTabs": app.ui.dock_tabs,
-        "infoPanel": app.ui.info_panel,
         "dock": app.ui.dock,
         "docking": app.ui.docking,
         "dockingReturns": app.ui.docking_returns,
@@ -101,7 +106,9 @@ pub fn inspect(app: &PhotocraftApp, ctx: &egui::Context) -> Value {
         "jobs": crate::jobs_ui::inspect(app),
         "histogram": crate::histogram_panel::inspect(app),
         "cameraRaw": app.camera_raw.as_ref().map(|d| d.describe(&app.ui.camera_raw_scope, &app.ui.camera_raw_preview)),
-    })
+    });
+    snapshot["infoPanel"] = json!(app.ui.info_panel);
+    snapshot
 }
 
 pub fn save_screenshot(app: &mut PhotocraftApp, image: &egui::ColorImage, path: Option<&str>) -> Value {
